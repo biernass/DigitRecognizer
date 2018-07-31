@@ -23,12 +23,13 @@ public class ClassifierRunner {
             e.printStackTrace();
         }
 
-        List<String[]> trainingsampleListAsArrays = trainingsampleList
+        List<String[]> trainingsampleListAsArraysWithoutLabels = trainingsampleList
                 .stream()
                 .map(x->x.split(","))
                 .collect(Collectors.toList());
+        trainingsampleListAsArraysWithoutLabels.remove(0);
 
-        List<List<Integer>> trainingsampleListAsIntegers = trainingsampleListAsArrays
+        List<List<Integer>> trainingsampleListAsIntegers = trainingsampleListAsArraysWithoutLabels
                 .stream()
                 .map(x->{
                     return Arrays.stream(x)
