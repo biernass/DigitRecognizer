@@ -45,10 +45,17 @@ public class ClassifierRunner {
         System.out.println("hi");
     }
 
-    public static double distance(Integer[] pointA, Integer[] pointB){
-        Integer difference = pointA[0] - pointB[0];
-        double result = Math.sqrt(difference * difference);
-        return result;
+    public static double distance(Integer[] pointA, Integer[] pointB) {
+        if (pointA.length == 1) {
+            Integer difference = pointA[0] - pointB[0];
+            double result = Math.sqrt(difference * difference);
+            return result;
+        } else {
+            Integer difference1 = pointA[0] - pointB[0];
+            Integer difference2 = pointA[1] - pointB[1];
+            double result = Math.sqrt(difference1 * difference1 + difference2 * difference2);
+            return result;
+        }
     }
 
 
