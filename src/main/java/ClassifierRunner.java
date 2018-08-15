@@ -9,26 +9,31 @@ import java.util.stream.Collectors;
 
 public class ClassifierRunner {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
+        List<Record> trainingRecords = getRecordsFromFile("trainingsample.csv");
+        List<Record> validationRecords = getRecordsFromFile("validationsample.csv");
 
-        List<String> lines = new ArrayList<>();
-
-
-        try {
-            Path pathOfTrainingsample = Paths.get("trainingsample.csv");
-            lines.addAll(Files.readAllLines(pathOfTrainingsample));
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Record record : validationRecords) {
+            Integer recognizedNumber = predict(record.Pixels, trainingRecords);
+            System.out.println(recognizedNumber + " " + (recognizedNumber == record.Number));
         }
 
-        List<String[]> trainingsampleListAsStringsArraysWithoutLabels = lines
+        System.out.println("hi");
+    }
+
+    private static List<Record> getRecordsFromFile(String fileName) throws IOException{
+        List<String> lines = new ArrayList<>();
+
+        Path pathOfTrainingsample = Paths.get(fileName);
+        lines.addAll(Files.readAllLines(pathOfTrainingsample));
+
+        List<Record> RecordsList = lines
                 .stream()
                 .map(x -> x.split(","))
-                .collect(Collectors.toList());
-        trainingsampleListAsStringsArraysWithoutLabels.remove(0);
-
-        List<Record> RecordsList = trainingsampleListAsStringsArraysWithoutLabels.stream()
+                .collect(Collectors.toList())
+                .subList(1, lines.size())
+                .stream()
                 .map(x -> Arrays.stream(x)
                         .map(y -> Integer.parseInt(y))
                         .collect(Collectors.toList()))      //parsing String to int
@@ -38,11 +43,9 @@ public class ClassifierRunner {
                     record.Pixels = x.subList(1, x.size()).toArray(new Integer[0]);
                     return record;
                 })
-
                 .collect(Collectors.toList());
 
-
-        System.out.println("hi");
+        return RecordsList;
     }
 
     public static double distance(Integer[] pointA, Integer[] pointB) {
@@ -55,7 +58,7 @@ public class ClassifierRunner {
         return Math.sqrt(result);
     }
 
-    public static Integer predict (Integer[] pixels, List<Record> sampleRecords){
+    public static Integer predict(Integer[] pixels, List<Record> sampleRecords) {
         Pair match = sampleRecords
                 .stream()
                 .map(x -> new Pair(x.Number, distance(pixels, x.Pixels)))
