@@ -1,10 +1,10 @@
+import javafx.util.Pair;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassifierRunner {
@@ -53,6 +53,18 @@ public class ClassifierRunner {
             result = result + Math.pow(difference, 2);
         }
         return Math.sqrt(result);
+    }
+
+    public static Integer predict (Integer[] pixels, List<Record> sampleRecords){
+        Pair match = sampleRecords
+                .stream()
+                .map(x -> new Pair(x.Number, distance(pixels, x.Pixels)))
+                .sorted(Comparator.comparingDouble(x -> (double) x.getValue()))
+                .findFirst()
+                .get();
+
+        Integer theBestNumber = (Integer) match.getKey();
+        return theBestNumber;
     }
 
 
