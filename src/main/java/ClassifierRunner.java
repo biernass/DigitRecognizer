@@ -14,15 +14,30 @@ public class ClassifierRunner {
         List<Record> trainingRecords = getRecordsFromFile("trainingsample.csv");
         List<Record> validationRecords = getRecordsFromFile("validationsample.csv");
 
+        List<Record> correctRecognizedNumbers = new ArrayList<>();
+        List<Record> wrongRecognizedNumbers = new ArrayList<>();
+
+
         for (Record record : validationRecords) {
             Integer recognizedNumber = predict(record.Pixels, trainingRecords);
-            System.out.println(recognizedNumber + " " + (recognizedNumber == record.Number));
+            if (recognizedNumber == record.Number) {
+                correctRecognizedNumbers.add(record);
+            } else {
+                wrongRecognizedNumbers.add(record);
+            }
         }
+        System.out.println("correct:");
+        double correctPercentage = (double) correctRecognizedNumbers.size() / validationRecords.size();
+        System.out.println(correctRecognizedNumbers.size() + "/" + validationRecords.size() + " = " + correctPercentage);
+        System.out.println("wrong:");
+        double wrongPercentage = (double) wrongRecognizedNumbers.size() / validationRecords.size();
+        System.out.println(wrongRecognizedNumbers.size() + "/" + validationRecords.size() + " = " + wrongPercentage);
 
-        System.out.println("hi");
+
+        System.out.println("end");
     }
 
-    private static List<Record> getRecordsFromFile(String fileName) throws IOException{
+    private static List<Record> getRecordsFromFile(String fileName) throws IOException {
         List<String> lines = new ArrayList<>();
 
         Path pathOfTrainingsample = Paths.get(fileName);
